@@ -3,6 +3,7 @@ require 'pry'
 
 class Game
  def initialize
+  @cash = 100
   @deck = Deck.new
   start_game
  end
@@ -10,15 +11,19 @@ class Game
  def start_game
   print "What's your name: "
   @player = gets.chomp
-  puts "Welcome #{@player} to the Ruby Casino!"
-  draw
-  puts @hand.length
+  puts "Welcome #{@player} to the Ruby blackjack!"
+  puts "Here's a $#{@cash} chip...lets have some fun!"
+  double_draw
  end
 
  # wip drawing method
- def draw
-  @hand = @deck.draw.rank, @deck.draw.rank
-  @hand = @hand.join(', ')
+ def double_draw
+  @player_hand = @deck.draw.rank, @deck.draw.rank
+  @player_hand = @player_hand.join(', ')
+  @dealer_hand = @deck.draw.rank, @deck.draw.rank
+  @dealer_hand = @dealer_hand.join(', ')
+  puts "Dealers hand: #{@dealer_hand[0]}, [ ]"
+  puts "Your hand: #{@player_hand}"
  end
 
  # just printing back the users input at the moment
