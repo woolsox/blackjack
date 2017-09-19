@@ -8,12 +8,14 @@ class Game
   start_game
  end
 
+ # begining prompts and methods
  def start_game
-  print "What's your name: "
+  print "What's your name? "
   @player = gets.chomp
   puts "Welcome #{@player} to the Ruby blackjack!"
   puts "Here's a $#{@cash} chip...lets have some fun!"
   double_draw
+  hit_or_stay
  end
 
  # wip drawing method
@@ -26,11 +28,21 @@ class Game
   puts "Your hand: #{@player_hand}"
  end
 
+ # wip on single draw method
+ def single_draw
+  @player_hand = @deck.draw.rank.to_s
+ end
+
  # just printing back the users input at the moment
  def hit_or_stay
-  print 'Hit or stay?'
-  answer = gets
-  puts answer
+  print 'Hit or stay? '
+  answer = gets.chomp.downcase
+  if answer[0] = "h"
+    single_draw
+    puts "Your hand is now: #{@player_hand}"
+  elsif answer[0] = "s"
+    return false
+  end
  end
 end
 
