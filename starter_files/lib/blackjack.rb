@@ -30,20 +30,35 @@ class Game
 
  # wip on single draw method
  def single_draw
-  @player_hand = @deck.draw.rank.to_s
+  @player_hand = @player_hand + ", " + @deck.draw.rank.to_s
  end
 
  # just printing back the users input at the moment
  def hit_or_stay
   print 'Hit or stay? '
   answer = gets.chomp.downcase
-  if answer[0] = "h"
+  if answer[0] == "h"
     single_draw
-    puts "Your hand is now: #{@player_hand}"
-  elsif answer[0] = "s"
-    return false
+    puts "Your hand is now: #{@player_hand} (Total: #{evaluate(@player_hand)})"
+  elsif answer[0] == "s"
+    puts "You decide to stay."
+  else
+    puts "Not a valid response"
+    hit_or_stay
   end
  end
+
+ def evaluate(hand)
+  @result = hand.split(',').map do |s|
+    if s === "A"
+      s = 11
+    else
+      s.to_i
+    end
+  end
+  @result.sum
+ end
+
 end
 
 Game.new
