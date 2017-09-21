@@ -16,7 +16,6 @@ class Game
   puts "Welcome #{@player.capitalize} to the Ruby blackjack!"
   puts "Here's a $#{@cash} chip...lets have some fun!"
   double_draw
-  hit_or_stay
  end
 
  # wip drawing method
@@ -27,11 +26,7 @@ class Game
   @dealer_hand = @dealer_hand.join(', ')
   puts "Dealers hand: #{@dealer_hand[0]}, [?]"
   puts "Your hand: #{@player_hand}"
- end
-
- # wip on single draw method
- def single_draw
-  @player_hand = @player_hand + ', ' + @deck.draw.rank.to_s
+  hit_or_stay
  end
 
  # just printing back the users input at the moment
@@ -50,6 +45,11 @@ class Game
     hit_or_stay
    end
   end
+ end
+
+ # wip on single draw method
+ def single_draw
+  @player_hand = @player_hand + ', ' + @deck.draw.rank.to_s
  end
 
  # evalutes any hand passed to it.
@@ -74,15 +74,19 @@ class Game
 
  # method to prompt player to play again
  def play_again
-  binding.pry
   print 'Play again? '
   answer = gets.chomp.downcase
   if answer[0] == 'y'
+   @bust = false
    double_draw
    hit_or_stay
   else
    puts 'Goodbye!'
   end
+ end
+
+ def clear_hand
+
  end
 
 end
