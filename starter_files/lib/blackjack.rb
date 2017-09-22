@@ -4,17 +4,17 @@ require 'pry'
 class Game
  def initialize
   @bust = false
-  @cash = 100
   @deck = Deck.new
   start_game
  end
 
  # begining prompts and methods
  def start_game
+  @cash = 100
   print "What's your name? "
   @player = gets.chomp
   puts "Welcome #{@player.capitalize} to the Ruby blackjack!"
-  puts "Here's a $#{@cash} chip...lets have some fun!"
+  puts "Here's a $#{@cash} chip, lets have some fun!"
   double_draw
  end
 
@@ -25,7 +25,7 @@ class Game
   @dealer_hand = @deck.draw.rank, @deck.draw.rank
   @dealer_hand = @dealer_hand.join(', ')
   puts "Dealers hand: #{@dealer_hand[0]}, [?]"
-  puts "Your hand: #{@player_hand}"
+  puts "Your hand: #{@player_hand} (Total: #{evaluate(@player_hand)})"
   hit_or_stay
  end
 
@@ -52,11 +52,21 @@ class Game
   @player_hand = @player_hand + ', ' + @deck.draw.rank.to_s
  end
 
+ def dealer_draw
+  @dealer_hand = @dealer_hand + ', ' + @deck.draw.rank.to_s
+ end
+
  # evalutes any hand passed to it.
  def evaluate(hand)
   @result = hand.split(',').map do |s|
    if s == 'A'
     s = 11
+   elsif s == 'J'
+    s = 10
+   elsif s == 'Q'
+    s = 10
+   elsif s == 'K'
+    s = 10
    else
     s.to_i
    end
@@ -67,6 +77,7 @@ class Game
    puts 'You bust.'
    play_again
   elsif @result.sum == 21
+   @cash += 20
    puts 'Blackjack!'
   end
   @result.sum
@@ -78,6 +89,7 @@ class Game
   answer = gets.chomp.downcase
   if answer[0] == 'y'
    @bust = false
+   puts "You've got $#{@cash} left."
    double_draw
    hit_or_stay
   else
@@ -85,10 +97,19 @@ class Game
   end
  end
 
- def clear_hand
-
+ # wip for managing dealers hand (non-functioning atm)
+ def dealer_play
+   if evaluate(@dealer_hand) < 16
+     dealer_draw
+     puts "Dealers hand is #{evaluate(@dealer_hand)}"
+   elsif evaluate(@dealer_hand) > 21
+     @cash += 20
+     puts "Dealer busts, you win!"
+     play_again
+   end
  end
 
+ def clear_hand; end
 end
 
 Game.new
