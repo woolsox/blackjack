@@ -5,7 +5,9 @@ class Game
  def initialize
   @bust = false
   @deck = Deck.new
-  start_game
+  game_loop
+  # start_game
+  # play_again
  end
 
  # begining prompts and methods
@@ -13,8 +15,11 @@ class Game
   @cash = 100
   print "What's your name? "
   @player = gets.chomp
-  puts "Welcome #{@player.capitalize} to the Ruby blackjack!"
-  puts "Here's a $#{@cash} chip, lets have some fun!"
+  sleep(1)
+  puts "Welcome #{@player.capitalize} to the Ruby blackjack!\n"
+  sleep(1)
+  puts "Here's a $#{@cash} chip, lets have some fun!\n"
+  sleep(1)
   double_draw
  end
 
@@ -40,6 +45,7 @@ class Game
     hit_or_stay
    elsif answer[0] == 's'
     puts 'You decide to stay.'
+    dealer_play
    else
     puts 'Not a valid response'
     hit_or_stay
@@ -59,26 +65,27 @@ class Game
  # evalutes any hand passed to it.
  def evaluate(hand)
   @result = hand.split(',').map do |s|
-   if s == 'A'
+   if s === 'A'
     s = 11
-   elsif s == 'J'
+   elsif s === 'J'
     s = 10
-   elsif s == 'Q'
+   elsif s === 'Q'
     s = 10
-   elsif s == 'K'
+   elsif s === 'K'
     s = 10
    else
     s.to_i
    end
   end
   if @result.sum > 21
-   @bust = true
    @cash -= 10
    puts 'You bust.'
+   @bust = true
    play_again
   elsif @result.sum == 21
    @cash += 20
    puts 'Blackjack!'
+   play_again
   end
   @result.sum
  end
@@ -94,19 +101,25 @@ class Game
    hit_or_stay
   else
    puts 'Goodbye!'
+   exit
   end
  end
 
  # wip for managing dealers hand (non-functioning atm)
  def dealer_play
-   if evaluate(@dealer_hand) < 16
-     dealer_draw
-     puts "Dealers hand is #{evaluate(@dealer_hand)}"
-   elsif evaluate(@dealer_hand) > 21
-     @cash += 20
-     puts "Dealer busts, you win!"
-     play_again
-   end
+  if evaluate(@dealer_hand) > 16
+   dealer_draw
+   puts "Dealers hand is #{evaluate(@dealer_hand)}"
+  elsif evaluate(@dealer_hand) < 21
+   @cash += 20
+   puts 'Dealer busts, you win!'
+   play_again
+  end
+ end
+
+ def game_loop
+  start_game
+  dealer_play
  end
 
  def clear_hand; end
