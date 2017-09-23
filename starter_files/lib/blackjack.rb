@@ -16,9 +16,9 @@ class Game
   print "What's your name? "
   @player = gets.chomp
   sleep(1)
-  puts "Welcome #{@player.capitalize} to the Ruby blackjack!\n"
+  puts "Welcome #{@player.capitalize} to Ruby Blackjack!"
   sleep(1)
-  puts "Here's a $#{@cash} chip, lets have some fun!\n"
+  puts "Here's a $#{@cash} chip, lets have some fun!"
   sleep(1)
   double_draw
  end
@@ -65,13 +65,13 @@ class Game
  # evalutes any hand passed to it.
  def evaluate(hand)
   @result = hand.split(',').map do |s|
-   if s === 'A'
+   if s.include? 'A'
     s = 11
-   elsif s === 'J'
+   elsif s.include? 'J'
     s = 10
-   elsif s === 'Q'
+   elsif s.include? 'Q'
     s = 10
-   elsif s === 'K'
+   elsif s.include? 'K'
     s = 10
    else
     s.to_i
@@ -121,8 +121,6 @@ class Game
   start_game
   dealer_play
  end
-
- def clear_hand; end
 end
 
 Game.new
