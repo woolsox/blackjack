@@ -1,24 +1,23 @@
 require_relative 'deck'
 require 'pry'
+require 'colorize'
 
 class Game
  def initialize
   @bust = false
   @deck = Deck.new
   game_loop
-  # start_game
-  # play_again
  end
 
  # begining prompts and methods
  def start_game
   @cash = 100
-  print "What's your name? "
+  print "What's your name? ".green
   @player = gets.chomp
   sleep(1)
-  puts "Welcome #{@player.capitalize} to Ruby Blackjack!"
+  puts "Welcome #{@player.capitalize} to Ruby Blackjack!".green
   sleep(1)
-  puts "Here's a $#{@cash} chip, lets have some fun!"
+  puts "Here's a $#{@cash} chip, lets have some fun!".green
   sleep(1)
   double_draw
  end
@@ -29,25 +28,27 @@ class Game
   @player_hand = @player_hand.join(', ')
   @dealer_hand = @deck.draw.rank, @deck.draw.rank
   @dealer_hand = @dealer_hand.join(', ')
-  puts "Dealers hand: #{@dealer_hand[0]}, [?]"
-  puts "Your hand: #{@player_hand} (Total: #{evaluate(@player_hand)})"
+  puts "Dealers hand: #{@dealer_hand[0]}, [?]".red
+  puts "Your hand: #{@player_hand} (Total: #{evaluate(@player_hand)})".blue
   hit_or_stay
  end
 
  # just printing back the users input at the moment
  def hit_or_stay
-  while @bust == false
-   print 'Hit or stay? '
+  @player_turn = true
+  while @bust == false && @player_turn == true
+   print 'Hit or stay? '.green
    answer = gets.chomp.downcase
    if answer[0] == 'h'
     single_draw
-    puts "Your hand is now: #{@player_hand} (Total: #{evaluate(@player_hand)})"
+    puts "Your hand is now: #{@player_hand} (Total: #{evaluate(@player_hand)})".blue
     hit_or_stay
    elsif answer[0] == 's'
-    puts 'You decide to stay.'
+    puts 'You decide to stay.'.green
+    @player_turn = false
     dealer_play
    else
-    puts 'Not a valid response'
+    puts 'Not a valid response'.green
     hit_or_stay
    end
   end
@@ -79,12 +80,12 @@ class Game
   end
   if @result.sum > 21
    @cash -= 10
-   puts 'You bust.'
+   puts 'You bust.'.green
    @bust = true
    play_again
   elsif @result.sum == 21
    @cash += 20
-   puts 'Blackjack!'
+   puts 'Blackjack!'.yellow
    play_again
   end
   @result.sum
@@ -92,34 +93,48 @@ class Game
 
  # method to prompt player to play again
  def play_again
-  print 'Play again? '
+  print 'Play again? '.green
   answer = gets.chomp.downcase
   if answer[0] == 'y'
+   @player_turn = true
    @bust = false
-   puts "You've got $#{@cash} left."
+   puts "You've got $#{@cash} left.".green
    double_draw
    hit_or_stay
   else
-   puts 'Goodbye!'
+   puts 'Goodbye!'.yellow
    exit
   end
  end
 
  # wip for managing dealers hand (non-functioning atm)
  def dealer_play
-  if evaluate(@dealer_hand) > 16
+  if evaluate(@dealer_hand) <= 16
    dealer_draw
-   puts "Dealers hand is #{evaluate(@dealer_hand)}"
-  elsif evaluate(@dealer_hand) < 21
+   puts "Dealers hand is #{evaluate(@dealer_hand)}".red
+   who_wins
+  elsif evaluate(@dealer_hand) >= 21
    @cash += 20
-   puts 'Dealer busts, you win!'
+   puts "Dealer busts, you win! #{evaluate(@dealer_hand)}".red
+   who_wins
+   play_again
+  end
+ end
+
+ def who_wins
+  if evaluate(@dealer_hand) < evaluate(@player_hand)
+   @cash += 20
+   puts 'You beat the dealer!'.blue
+   play_again
+  elsif evaluate(@dealer_hand) > evaluate(@player_hand)
+   @cash -= 10
+   puts 'The dealer beat you!'.red
    play_again
   end
  end
 
  def game_loop
   start_game
-  dealer_play
  end
 end
 
